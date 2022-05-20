@@ -13,10 +13,7 @@ client.on("message", (msg) => {
   if (msg.author.bot) return;
   if (msg.content.indexOf(prefix.length) !== 0) return;
 
-  const args = msg.content.slice(prefix.length).trim().split(/ +/g);
-  const command = args.shift().toLowerCase();
-
-  if (command === "ping") {
+  if (msg == "ping") {
     msg.reply("pong");
   }
 });
