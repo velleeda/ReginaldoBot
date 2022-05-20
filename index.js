@@ -10,7 +10,13 @@ client.on("ready", () => {
 });
 
 client.on("message", (msg) => {
-  if (msg.content === "ping") {
+  if (msg.author.bot) return;
+  if (msg.content.indexOf(prefix.length) !== 0) return;
+
+  const args = msg.content.slice(prefix.length).trim().split(/ +/g);
+  const command = args.shift().toLowerCase();
+
+  if (command === "ping") {
     msg.reply("pong");
   }
 });
