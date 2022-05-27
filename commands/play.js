@@ -142,6 +142,8 @@ const videoPlayer = async (guild, song) => {
 
   var stream = ytdl(song, options);
 
+  console.log(songQueue);
+
   const dispatcher = await songQueue?.connection
     .play(stream, {
       seek: 0,
@@ -149,17 +151,15 @@ const videoPlayer = async (guild, song) => {
     })
     .on("finish", () => {
       // CHECAR SE TEM MAIS DE UMA MUSCA SE NAO QUITAR!!!
-      console.log(songQueue);
+
       if (songQueue.songs.length > 0) {
         songQueue.songs.shift();
+        videoPlayer(guild, songQueue.songs[0].url);
       } else {
         songQueue.voice_channel.leave();
+        videoPlayer(guild, false);
         Channel.send(`Fui de dormes família tmj sempre tlgd? 💪😎🥱🤰👨‍🦯`);
       }
-
-      return songQueue.songs.length > 0
-        ? videoPlayer(guild, songQueue.songs[0].url)
-        : videoPlayer(guild, false);
     })
     .on("error", (error) => {
       console.log(error);
