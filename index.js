@@ -1,21 +1,24 @@
-const { Client } = require("discord.js");
+// Requirements
+const Discord = require("discord.js");
 require("dotenv").config();
 
-const client = new Client({ intents: ["GUILDS", "GUILD_MESSAGES"] });
+ffmpeg_options = {
+  options: "-vn",
+  before_options: "-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5",
+};
 
-const prefix = process.env.PREFIX;
-
-client.on("ready", () => {
-  console.log(`Logged in as ${client.user.tag}!`);
+// Client and Prefix Creation
+const client = new Discord.Client({
+  intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_VOICE_STATES"],
 });
 
-client.on("message", (msg) => {
-  if (msg.author.bot) return;
-  if (msg.content.indexOf(prefix.length) !== 0) return;
+//Command & Event Collection Creation
+client.commands = new Discord.Collection();
+client.events = new Discord.Collection();
 
-  if (msg == "ping") {
-    msg.reply("pong");
-  }
+["commandHandler", "eventHandler"].forEach((handler) => {
+  require(`./handlers/${handler}`)(client, Discord);
 });
 
+// Client Login
 client.login(process.env.CLIENT_TOKEN);

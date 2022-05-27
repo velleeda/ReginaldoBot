@@ -7,10 +7,20 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node ."
   },
-  "author": "",
-  "license": "ISC",
   "dependencies": {
-    "discord.js": "^13.7.0",
-    "dotenv": "^16.0.1"
-  }
+    "@discordjs/opus": "^0.5.3",
+    "discord.js": "^12.5.3",
+    "dotenv": "^16.0.1",
+    "ffmpeg-static": "^4.4.1",
+    "yt-search": "^2.10.3",
+    "ytdl-core": "^4.11.0"
+  },
+  "engines": {
+    "node": "16.x"
+  },
+  "repository": {
+    "url": "https://github.com/velleeda/ReginaldoBot"
+  },
+  "author": "",
+  "license": "ISC"
 }

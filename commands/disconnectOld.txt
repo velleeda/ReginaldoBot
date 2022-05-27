@@ -1,0 +1,17 @@
+module.exports = {
+  name: "disconnect",
+  aliases: ["dc", "leave"],
+  description: "Stops the bot and leaves the voice channel",
+  async execute(message, args) {
+    const voiceChannel = message.member.voice.channel;
+
+    if (!voiceChannel)
+      return message.channel.send("Tem que ta numa call pra da dc PORRA 🤦‍♂️");
+
+    await voiceChannel.leave();
+
+    await message.channel.send(
+      "Fui de dormes família tmj sempre tlgd? 💪😎🥱🤰👨‍🦯"
+    );
+  },
+};
