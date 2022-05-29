@@ -32,6 +32,9 @@ module.exports = {
     if (!permissions.has("SPEAK"))
       return message.channel.send("CPX! Tu não tem as permissão necessária 🧏‍♂️");
 
+    if (!args.length)
+      return message.channel.send("Tem que mandar o link/nome da musca man!");
+
     if (args.join().includes("&ab_channel")) {
       argArr = args.join().split("&ab_channel");
       args = [argArr[0]];
