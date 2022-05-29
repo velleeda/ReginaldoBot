@@ -13,23 +13,25 @@ module.exports = {
   aliases: ["p"],
   description: "Plays music",
   async execute(message, args) {
+    // Necessary variables
     const serverQueue = await queue.get(message.guild.id);
     const voiceChannel = await message.member.voice.channel;
     const botChannel = await message.guild.me.voice.channel;
 
+    // Simple verifications
     if (!voiceChannel)
       return message.channel.send(
         "Tem que ta numa call pra usar o comando PORRA 🤦‍♂️"
       );
+    if (botChannel && botChannel !== voiceChannel)
+      return message.channel.send("Tem que ta na msm call q o bot pra usar 😑");
 
     const permissions = voiceChannel.permissionsFor(message.client.user);
-
     if (!permissions.has("CONNECT"))
       return message.channel.send("CPX! Tu não tem as permissão necessária 🧏‍♂️");
     if (!permissions.has("SPEAK"))
       return message.channel.send("CPX! Tu não tem as permissão necessária 🧏‍♂️");
-    if (botChannel && botChannel !== voiceChannel)
-      return message.channel.send("Tem que ta na msm call q o bot pra usar :/");
+
     if (args.join().includes("&ab_channel")) {
       argArr = args.join().split("&ab_channel");
       args = [argArr[0]];
@@ -37,6 +39,8 @@ module.exports = {
 
     let song = {};
 
+    // Verifies if the argument received is either a youtube playlist link,
+    // a youtube video link or the text name of a music
     const videoFinder = async (args) => {
       if (String(args).match(regYoutubeLink)) {
         if (String(args).match(regYoutubePlaylist)) {
@@ -58,6 +62,10 @@ module.exports = {
 
     if (!video) return message.channel.send("Achei nada não man 😕");
 
+    // If the argument received is a playlist it will set all the videos to a
+    // playlist with the queue format, if it is unique video it will simply set to
+    // the queue format and if it was the text name of a music it will also set it to
+    // the queue format
     if (String(args).match(regYoutubePlaylist)) {
       song = [];
       var playlist = video;
@@ -90,6 +98,8 @@ module.exports = {
       };
     }
 
+    // If the server didn't already have a queue it will create one and if it
+    // has it will add the music to the queue
     if (!serverQueue) {
       const queueConstructor = {
         voice_channel: voiceChannel,
@@ -101,17 +111,12 @@ module.exports = {
       queueConstructor.songs = queueConstructor.songs.concat(song);
       queue.set(message.guild.id, queueConstructor);
 
+      // Tries to connect to the voice channel
+      // If not possible a message is sent stating connection failed
       try {
         const connection = await voiceChannel.join();
-        message.channel.send(
-          `Tocando ***${queueConstructor.songs[0].title}***`
-        );
         queueConstructor.connection = connection;
-        videoPlayer(
-          message.guild,
-          queueConstructor.songs[0].url,
-          message.channel
-        );
+        videoPlayer(message.guild, queueConstructor.songs[0].url);
       } catch (error) {
         queue.delete(message.guild.id);
         message.channel.send("Deu troios conectando guys! 😰");
@@ -119,15 +124,16 @@ module.exports = {
       }
     } else {
       serverQueue.songs = serverQueue.songs.concat(song);
+      message.channel.send(`***${song.title}*** adicionada na queue`);
     }
-    console.log("fim");
-    queueConstructor.songs.onchange;
   },
 };
 
+// Creation of the video player
 const videoPlayer = async (guild, song) => {
   const songQueue = queue.get(guild.id);
 
+  // If there isn't any songs inside the queue it will disconnect from the voice channel
   if (!song) {
     songQueue.voice_channel.leave();
     queue.delete(guild.id);
@@ -142,8 +148,9 @@ const videoPlayer = async (guild, song) => {
 
   var stream = ytdl(song, options);
 
-  console.log(songQueue);
-
+  // On play the dispatcher sets the configurations of the song
+  // On the end of the song it checks if there's more songs and skips to the next
+  // one and disconnects if there's none
   const dispatcher = await songQueue?.connection
     .play(stream, {
       seek: 0,
@@ -152,19 +159,26 @@ const videoPlayer = async (guild, song) => {
     .on("finish", () => {
       // CHECAR SE TEM MAIS DE UMA MUSCA SE NAO QUITAR!!!
 
-      if (songQueue.songs.length > 0) {
+      if (songQueue?.songs.length > 0) {
         songQueue.songs.shift();
-        videoPlayer(guild, songQueue.songs[0].url);
+        videoPlayer(guild, songQueue.songs[0]?.url);
       } else {
-        songQueue.voice_channel.leave();
         videoPlayer(guild, false);
-        Channel.send(`Fui de dormes família tmj sempre tlgd? 💪😎🥱🤰👨‍🦯`);
+        songQueue.voice_channel.leave();
+        return songQueue.text_channel.send(
+          `Fui de dormes família tmj sempre tlgd? 💪😎🥱🤰👨‍🦯`
+        );
       }
     })
     .on("error", (error) => {
       console.log(error);
-      return songQueue.songs.length > 0
-        ? videoPlayer(guild, songQueue.songs[0].url)
+      return songQueue?.songs.length > 0
+        ? videoPlayer(guild, songQueue.songs[0]?.url)
         : videoPlayer(guild, false);
     });
+
+  songQueue.text_channel.send(`Tocando ***${songQueue.songs[0]?.title}***`);
 };
+
+module.exports.queue = queue;
+module.exports.videoPlayer = videoPlayer;

@@ -4,6 +4,7 @@ module.exports = {
   cooldown: 120,
   description: "This is a rules command",
   execute(message, args, Discord) {
+    // Sends an embed with the rules
     const newEmbed = new Discord.MessageEmbed()
       .setColor("#000")
       .setTitle("Rules")
