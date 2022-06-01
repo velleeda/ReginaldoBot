@@ -55,7 +55,7 @@ const videoPlayer = async (guild, song) => {
         ? videoPlayer(guild, songQueue.songs[0]?.url)
         : videoPlayer(guild, false);
     });
-  if (songQueue.loop) {
+  if (songQueue?.loop) {
     return;
   } else {
     tocandoEmbed(songQueue);
