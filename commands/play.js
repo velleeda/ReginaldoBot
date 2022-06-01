@@ -13,7 +13,6 @@ module.exports = {
     const serverQueue = await queue.get(message.guild.id);
     const voiceChannel = await message.member.voice.channel;
     const botChannel = await message.guild.me.voice.channel;
-    const permissions = voiceChannel.permissionsFor(message.client.user);
 
     // Simple verifications
     if (!voiceChannel)
@@ -22,6 +21,8 @@ module.exports = {
       );
     if (botChannel && botChannel !== voiceChannel)
       return message.channel.send("Tem que ta na msm call q o bot pra usar 😑");
+
+    const permissions = voiceChannel.permissionsFor(message.client.user);
     if (!permissions.has("CONNECT"))
       return message.channel.send("CPX! Tu não tem as permissão necessária 🧏‍♂️");
     if (!permissions.has("SPEAK"))
