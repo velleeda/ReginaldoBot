@@ -28,8 +28,9 @@ module.exports = {
     }
 
     // Shifts to the next song and sets it into the videoPlayer
-    serverQueue.songs.shift();
-    videoPlayer(message, serverQueue.songs[0]?.url, queue);
+    console.log(serverQueue.songs);
+    serverQueue?.songs.shift();
+    videoPlayer(message.guild, serverQueue.songs[0]?.url);
 
     await message.channel.send("Pulei 😅");
   },
