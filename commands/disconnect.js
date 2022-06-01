@@ -1,4 +1,4 @@
-const { queue } = require("./play");
+const { queue } = require("./queueMap");
 
 module.exports = {
   name: "disconnect",
@@ -20,6 +20,7 @@ module.exports = {
 
     // If the queue has any songs it will delete it
     if (serverQueue?.songs.length > 0) {
+      serverQueue.loop = false;
       queue.delete(message.guild.id);
     }
 

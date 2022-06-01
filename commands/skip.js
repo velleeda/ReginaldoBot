@@ -1,8 +1,9 @@
-const { queue, videoPlayer } = require("./play");
+const { queue } = require("./queueMap");
+const { videoPlayer } = require("./videoPlayer");
 
 module.exports = {
   name: "skip",
-  aliases: ["s", "pular"],
+  aliases: "s",
   description: "Skips the song",
   async execute(message, args) {
     // Necessary variables
@@ -20,14 +21,15 @@ module.exports = {
     if (!serverQueue) return message.channel.send("Não tem musca na queue 😕");
 
     // If the queue only has one song(the one that's already playing) it will disconnect
-    if (serverQueue.songs.length <= 1) {
+    if (serverQueue.songs.length === 1) {
+      serverQueue.loop = false;
       queue.delete(message.guild.id);
       return voiceChannel.leave();
     }
 
     // Shifts to the next song and sets it into the videoPlayer
     serverQueue.songs.shift();
-    videoPlayer(message.guild, serverQueue.songs[0]?.url);
+    videoPlayer(message, serverQueue.songs[0]?.url, queue);
 
     await message.channel.send("Pulei 😅");
   },
