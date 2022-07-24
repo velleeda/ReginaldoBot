@@ -1,0 +1,30 @@
+{
+  "name": "discordbot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ."
+  },
+  "dependencies": {
+    "@discordjs/opus": "^0.5.3",
+    "discord.js": "^12.5.3",
+    "dotenv": "^10.0.0",
+    "ffmpeg-static": "^4.4.0",
+    "timelabel": "^1.2.0",
+    "youtube-search-without-api-key": "^1.0.7",
+    "ytdl-core": "^4.11.0",
+    "ytpl": "^2.3.0",
+    "ytSearchVelleda": "git+https://github.com/velleeda/ytSearchVelleda.git",
+    "discord-buttons": "^4.0.0"
+  },
+  "engines": {
+    "node": "16.x"
+  },
+  "repository": {
+    "url": "https://github.com/velleeda/ReginaldoBot"
+  },
+  "author": "",
+  "license": "ISC"
+}
